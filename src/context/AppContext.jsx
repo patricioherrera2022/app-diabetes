@@ -41,6 +41,32 @@ export function AppProvider({ children }) {
   }, []);
 
   useEffect(() => {
+    async function fetchLogs() {
+      if (mode === 'supabase' && user) {
+        const { data, error } = await supabase
+          .from('glucose_logs')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('date', { ascending: false });
+          
+        if (!error && data) {
+          setLogs(data);
+        } else {
+          console.error("Error fetching logs from supabase:", error);
+        }
+      } else if (mode === 'guest') {
+        const localLogs = localStorage.getItem('glucose_logs');
+        if (localLogs) {
+          setLogs(JSON.parse(localLogs));
+        } else {
+          setLogs([]);
+        }
+      }
+    }
+    fetchLogs();
+  }, [user, mode]);
+
+  useEffect(() => {
     const savedTheme = localStorage.getItem('glucose_theme') || 'light';
     setTheme(savedTheme);
     document.documentElement.setAttribute('data-theme', savedTheme);
