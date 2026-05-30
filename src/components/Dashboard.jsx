@@ -6,6 +6,7 @@ import { HistoryList } from './HistoryList';
 import { GlucoseChart } from './GlucoseChart';
 import { RemindersCard } from './RemindersCard';
 import { AuthModal } from './AuthModal';
+import { AIAnalyzer } from './AIAnalyzer';
 import { useAppContext } from '../context/AppContext';
 
 export function Dashboard() {
@@ -34,6 +35,8 @@ export function Dashboard() {
 
         <div id="mainContentArea" style={{ display: 'block' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            
+            <AIAnalyzer />
             
             <DashboardStats />
 
