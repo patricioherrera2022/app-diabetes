@@ -5,6 +5,7 @@ import { es } from 'date-fns/locale';
 import { useAppContext } from '../context/AppContext';
 import { supabase } from '../lib/supabase';
 import { getStatusClass } from '../lib/utils';
+import * as XLSX from 'xlsx';
 
 export function HistoryList() {
   const { logs, setLogs, mode } = useAppContext();
@@ -34,42 +35,54 @@ export function HistoryList() {
     }
   };
 
-  const exportToCSV = () => {
+  const exportToExcel = () => {
     if (logs.length === 0) {
       alert("No hay datos para exportar.");
       return;
     }
 
-    let csvContent = "data:text/csv;charset=utf-8,";
-    csvContent += "Fecha,Hora,Glucosa (mg/dL),Nota/Etiqueta\n";
-
-    logs.forEach(log => {
+    const dataToExport = logs.map(log => {
+      let dateStr = log.date;
+      let timeStr = "";
       try {
         const d = parseISO(log.date);
-        const dateStr = format(d, 'yyyy-MM-dd');
-        const timeStr = format(d, 'HH:mm');
-        const noteStr = log.note ? `"${log.note.replace(/"/g, '""')}"` : "";
-        csvContent += `${dateStr},${timeStr},${log.value},${noteStr}\n`;
+        dateStr = format(d, 'yyyy-MM-dd');
+        timeStr = format(d, 'HH:mm');
       } catch (e) {
-        // Fallback
+        // Fallback if date is malformed
       }
+
+      return {
+        "Fecha": dateStr,
+        "Hora": timeStr,
+        "Glucosa (mg/dL)": log.value,
+        "Nota/Etiqueta": log.note || ""
+      };
     });
 
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `glycoflow_export_${format(new Date(), 'yyyyMMdd')}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+
+    // Styling the headers (bold) - sheetjs free version support is limited but we can auto-size cols
+    const wscols = [
+      {wch: 12}, // Fecha
+      {wch: 10}, // Hora
+      {wch: 18}, // Glucosa
+      {wch: 30}  // Nota
+    ];
+    worksheet['!cols'] = wscols;
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Historial Glucosa");
+
+    XLSX.writeFile(workbook, `glycoflow_export_${format(new Date(), 'yyyyMMdd')}.xlsx`);
   };
 
   return (
     <div className="card">
       <div className="history-controls" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
         <div className="card-title" style={{ marginBottom: 0 }}>Historial de Medidas</div>
-        <button className="btn-export" onClick={exportToCSV} title="Exportar CSV" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '13px', fontWeight: '600' }}>
-          <Download size={16} /> Exportar CSV
+        <button className="btn-export" onClick={exportToExcel} title="Exportar Excel" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '13px', fontWeight: '600' }}>
+          <Download size={16} /> Exportar Excel
         </button>
       </div>
 
