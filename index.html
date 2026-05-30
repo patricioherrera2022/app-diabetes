@@ -1605,7 +1605,7 @@
                                 <span class="status-text">Modo Invitado</span>
                             </div>
                         </div>
-                        <button class="btn-dropdown-action" id="dropdownAuthActionBtn">Iniciar Sesión</button>
+                        <button class="btn-dropdown-action" id="dropdownAuthActionBtn" onclick="handleDropdownAuthAction(event)">Iniciar Sesión</button>
                     </div>
                 </div>
             </div>
@@ -1889,7 +1889,7 @@
             document.getElementById('reminderToggleBtn').addEventListener('click', toggleRemindersCard);
             document.getElementById('notificationsEnableSwitch').addEventListener('change', handleNotificationSwitchToggle);
             document.getElementById('btnAddReminder').addEventListener('click', addNewReminder);
-            document.getElementById('dropdownAuthActionBtn').addEventListener('click', handleDropdownAuthAction);
+            // document.getElementById('dropdownAuthActionBtn').addEventListener('click', handleDropdownAuthAction); // Se usa onclick en el HTML
             
             window.addEventListener('resize', debounce(() => drawChart(), 200));
 
@@ -2112,7 +2112,11 @@
             renderApp();
         }
 
-        function handleDropdownAuthAction() {
+        function handleDropdownAuthAction(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
             document.getElementById('profileDropdown').style.display = 'none';
             if (appState.user && supabaseClient) {
                 // Cerrar sesión
