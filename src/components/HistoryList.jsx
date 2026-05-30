@@ -74,7 +74,15 @@ export function HistoryList() {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Historial Glucosa");
 
-    XLSX.writeFile(workbook, `glycoflow_export_${format(new Date(), 'yyyyMMdd')}.xlsx`);
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
+    const url = window.URL.createObjectURL(data);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `glycoflow_export_${format(new Date(), 'yyyyMMdd')}.xlsx`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
