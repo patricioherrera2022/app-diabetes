@@ -1605,7 +1605,7 @@
                                 <span class="status-text">Modo Invitado</span>
                             </div>
                         </div>
-                        <button class="btn-dropdown-action" id="dropdownAuthActionBtn" onclick="handleDropdownAuthAction(event)">Iniciar Sesión</button>
+                        <button class="btn-dropdown-action" id="dropdownAuthActionBtn">Iniciar Sesión</button>
                     </div>
                 </div>
             </div>
@@ -1634,7 +1634,7 @@
                         <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Registrarse</button>
                     </div>
                     <div class="auth-error-msg" id="authErrorMsg"></div>
-                    <form id="authForm" onsubmit="handleAuthSubmit(event)">
+                    <form id="authForm">
                         <div class="form-group">
                             <label for="authEmail">Correo Electrónico</label>
                             <input type="email" id="authEmail" class="custom-note-input" placeholder="ejemplo@correo.com" required autocomplete="email">
@@ -1836,8 +1836,12 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_9wU2xZTDIgE-SqGsy8iKdg_KMQmGzTB';
 
         let supabaseClient = null;
-        if (SUPABASE_URL !== 'YOUR_SUPABASE_URL' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY') {
-            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        try {
+            if (typeof supabase !== 'undefined' && SUPABASE_URL !== 'YOUR_SUPABASE_URL' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY') {
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            }
+        } catch (err) {
+            console.error("Error initializing Supabase", err);
         }
 
         // Datos Mock por defecto para simulación visual inicial
@@ -1889,7 +1893,8 @@
             document.getElementById('reminderToggleBtn').addEventListener('click', toggleRemindersCard);
             document.getElementById('notificationsEnableSwitch').addEventListener('change', handleNotificationSwitchToggle);
             document.getElementById('btnAddReminder').addEventListener('click', addNewReminder);
-            // document.getElementById('dropdownAuthActionBtn').addEventListener('click', handleDropdownAuthAction); // Se usa onclick en el HTML
+            document.getElementById('dropdownAuthActionBtn').addEventListener('click', handleDropdownAuthAction);
+            document.getElementById('authForm').addEventListener('submit', handleAuthSubmit);
             
             window.addEventListener('resize', debounce(() => drawChart(), 200));
 
@@ -1905,7 +1910,8 @@
             document.getElementById('userMenuBtn').addEventListener('click', (e) => {
                 e.stopPropagation();
                 const dropdown = document.getElementById('profileDropdown');
-                dropdown.style.display = dropdown.style.display === 'none' ? 'flex' : 'none';
+                const isHidden = window.getComputedStyle(dropdown).display === 'none';
+                dropdown.style.display = isHidden ? 'flex' : 'none';
             });
 
             // Arrancar el servicio de recordatorios locales
@@ -2061,7 +2067,17 @@
 
         async function handleAuthSubmit(e) {
             e.preventDefault();
-            if (!supabaseClient) return;
+            
+            const errorDiv = document.getElementById('authErrorMsg');
+            
+            if (!supabaseClient) {
+                errorDiv.style.display = 'block';
+                errorDiv.style.backgroundColor = 'var(--danger-light)';
+                errorDiv.style.borderColor = 'var(--danger-border)';
+                errorDiv.style.color = 'var(--danger)';
+                errorDiv.innerText = 'Servicio de autenticación no disponible. Verifica tu conexión.';
+                return;
+            }
 
             const email = document.getElementById('authEmail').value.trim();
             const password = document.getElementById('authPassword').value;
