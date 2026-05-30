@@ -384,6 +384,77 @@
         }
 
         /* Tarjeta de Autenticación */
+        /* Modal de Autenticación */
+        .auth-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .auth-modal-overlay.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .auth-modal-box {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 28px 24px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .auth-modal-overlay.visible .auth-modal-box {
+            transform: translateY(0);
+        }
+
+        .auth-modal-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .auth-modal-logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary) 0%, #818cf8 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+            flex-shrink: 0;
+        }
+
+        .auth-modal-logo svg {
+            width: 20px;
+            height: 20px;
+            fill: #ffffff;
+        }
+
+        .auth-modal-title {
+            font-size: 18px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-primary) 30%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
         .auth-tabs {
             display: flex;
             border-bottom: 2px solid var(--border-color);
@@ -403,6 +474,7 @@
             text-align: center;
             border-bottom: 2px solid transparent;
             margin-bottom: -2px;
+            font-family: var(--font-family);
         }
 
         .auth-tab.active {
@@ -431,6 +503,18 @@
 
         .auth-divider::before { left: 0; }
         .auth-divider::after { right: 0; }
+
+        .auth-error-msg {
+            background-color: var(--danger-light);
+            border: 1px solid var(--danger-border);
+            color: var(--danger);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            display: none;
+        }
 
         /* Spinner del Botón de Ingreso */
         .spinner {
@@ -1274,29 +1358,207 @@
             transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
-        /* Responsividad */
+        /* =============================================
+           SISTEMA RESPONSIVO COMPLETO
+           - Mobile:        < 480px
+           - Mobile grande: 481px - 640px
+           - Tablet:        641px - 900px
+           - Desktop:       901px - 1280px
+           - Desktop grande: > 1280px
+        ============================================= */
+
+        /* === MÓVIL (hasta 480px) === */
         @media (max-width: 480px) {
-            body {
-                background-color: var(--bg-primary);
-            }
             .app-container {
                 box-shadow: none;
                 border-radius: 0;
+                max-width: 100%;
+            }
+            .content {
+                padding: 12px;
+                gap: 12px;
+            }
+            header {
+                padding: 12px 14px;
+            }
+            h1 {
+                font-size: 17px;
+            }
+            .icon-btn {
+                width: 34px;
+                height: 34px;
+            }
+            .stat-val {
+                font-size: 22px;
+            }
+            .glucose-btn {
+                width: 38px;
+                height: 44px;
+                font-size: 15px;
+            }
+            .glucose-input-wrapper input {
+                font-size: 20px;
+                height: 44px;
+            }
+            .btn-primary {
+                height: 44px;
+                font-size: 14px;
+            }
+            .card {
+                padding: 14px;
+            }
+            .chart-container {
+                height: 200px;
+            }
+            .history-controls {
+                flex-wrap: wrap;
+            }
+            .filter-btn {
+                font-size: 10px;
+                padding: 5px 8px;
+            }
+            .tag-pill {
+                font-size: 10px;
+                padding: 5px 10px;
+            }
+            .profile-dropdown {
+                right: -10px;
+                width: 200px;
+            }
+        }
+
+        /* === MÓVIL GRANDE (481px - 640px) === */
+        @media (min-width: 481px) and (max-width: 640px) {
+            body {
+                padding: 0;
+                background-color: var(--bg-primary);
+            }
+            .app-container {
+                max-width: 100%;
+                border-radius: 0;
+                box-shadow: none;
             }
             .content {
                 padding: 16px;
             }
         }
 
-        @media (min-width: 481px) {
+        /* === TABLET (641px - 900px) === */
+        @media (min-width: 641px) and (max-width: 900px) {
             body {
-                padding: 20px 0;
+                padding: 24px 20px;
+                align-items: flex-start;
             }
             .app-container {
+                max-width: 700px;
                 border-radius: var(--radius-lg);
                 border: 1px solid var(--border-color);
-                box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05);
-                overflow: hidden;
+                box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.06);
+                overflow: visible;
+                min-height: auto;
+            }
+            .content {
+                padding: 20px;
+                gap: 18px;
+            }
+            /* Cuadrícula de 2 columnas para estadísticas ya está bien */
+            .chart-container {
+                height: 260px;
+            }
+            .history-list {
+                max-height: 600px;
+            }
+        }
+
+        /* === DESKTOP (901px - 1280px) — Layout de 2 columnas === */
+        @media (min-width: 901px) {
+            body {
+                padding: 32px 24px;
+                align-items: flex-start;
+            }
+
+            .app-container {
+                max-width: 1200px;
+                min-height: auto;
+                border-radius: var(--radius-lg);
+                border: 1px solid var(--border-color);
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.06);
+                overflow: visible;
+            }
+
+            header {
+                border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+                padding: 18px 28px;
+            }
+
+            .content {
+                padding: 24px 28px;
+                gap: 20px;
+            }
+
+            /* Layout principal de 2 columnas en desktop */
+            .desktop-layout {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+                align-items: start;
+            }
+
+            /* La columna de la izquierda tiene el formulario y recordatorios */
+            .desktop-col-left {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            /* La columna de la derecha tiene el gráfico e historial */
+            .desktop-col-right {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            /* Estadísticas en 4 columnas en desktop */
+            .summary-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .chart-container {
+                height: 280px;
+            }
+
+            .history-list {
+                max-height: none;
+                overflow-y: auto;
+                max-height: 520px;
+            }
+
+            .reminders-list {
+                max-height: none;
+            }
+
+            .profile-dropdown {
+                width: 240px;
+            }
+
+            .chart-target-indicator {
+                gap: 24px;
+            }
+        }
+
+        /* === DESKTOP GRANDE (> 1280px) === */
+        @media (min-width: 1281px) {
+            .app-container {
+                max-width: 1320px;
+            }
+            .content {
+                padding: 28px 36px;
+            }
+            header {
+                padding: 20px 36px;
+            }
+            .chart-container {
+                height: 300px;
             }
         }
     </style>
@@ -1358,30 +1620,39 @@
                 </div>
             </div>
 
-            <!-- Formulario de Autenticación (Login / Registro) -->
-            <div class="card" id="authCard" style="display: none;">
-                <div class="auth-tabs">
-                    <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Iniciar Sesión</button>
-                    <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Registrarse</button>
-                </div>
-                <form id="authForm" onsubmit="handleAuthSubmit(event)">
-                    <div class="form-group">
-                        <label for="authEmail">Correo Electrónico</label>
-                        <input type="email" id="authEmail" class="custom-note-input" placeholder="ejemplo@correo.com" required>
+            <!-- Modal de Autenticación (overlay flotante) -->
+            <div class="auth-modal-overlay" id="authModal">
+                <div class="auth-modal-box">
+                    <div class="auth-modal-header">
+                        <div class="auth-modal-logo">
+                            <svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                        </div>
+                        <div class="auth-modal-title">GlycoFlow</div>
                     </div>
-                    <div class="form-group">
-                        <label for="authPassword">Contraseña</label>
-                        <input type="password" id="authPassword" class="custom-note-input" placeholder="Mínimo 6 caracteres" required>
+                    <div class="auth-tabs">
+                        <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Iniciar Sesión</button>
+                        <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Registrarse</button>
                     </div>
-                    <button type="submit" class="btn-primary" id="btnAuthAction">
-                        <span id="authActionText">Ingresar</span>
-                        <div class="spinner" id="authSpinner" style="display: none;"></div>
+                    <div class="auth-error-msg" id="authErrorMsg"></div>
+                    <form id="authForm" onsubmit="handleAuthSubmit(event)">
+                        <div class="form-group">
+                            <label for="authEmail">Correo Electrónico</label>
+                            <input type="email" id="authEmail" class="custom-note-input" placeholder="ejemplo@correo.com" required autocomplete="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="authPassword">Contraseña</label>
+                            <input type="password" id="authPassword" class="custom-note-input" placeholder="Mínimo 6 caracteres" required autocomplete="current-password">
+                        </div>
+                        <button type="submit" class="btn-primary" id="btnAuthAction">
+                            <span id="authActionText">Ingresar</span>
+                            <div class="spinner" id="authSpinner" style="display: none;"></div>
+                        </button>
+                    </form>
+                    <div class="auth-divider">o</div>
+                    <button class="now-btn" style="width: 100%; height: 44px; font-weight: 700; border-radius: var(--radius-md); font-family: var(--font-family);" onclick="continueAsGuest()">
+                        Continuar sin cuenta (datos locales)
                     </button>
-                </form>
-                <div class="auth-divider">o</div>
-                <button class="now-btn" style="width: 100%; height: 44px; font-weight: 700; border-radius: var(--radius-md);" onclick="continueAsGuest()">
-                    Continuar como Invitado (Datos locales)
-                </button>
+                </div>
             </div>
 
             <!-- Contenedor de la Aplicación Principal -->
@@ -1631,7 +1902,7 @@
 
         // Configuración y Escucha de Sesión Supabase
         function initAuthConnection() {
-            // Cargar recordatorios (siempre locales por privacidad del navegador y permisos de alertas)
+            // Cargar recordatorios (siempre locales)
             let savedReminders = localStorage.getItem('glucose_reminders');
             appState.reminders = savedReminders ? JSON.parse(savedReminders) : defaultReminders;
             localStorage.setItem('glucose_reminders', JSON.stringify(appState.reminders));
@@ -1643,46 +1914,40 @@
             renderRemindersList();
 
             if (supabaseClient) {
-                // Escuchador del Estado de Autenticación
+                // Escuchar cambios de sesión
                 supabaseClient.auth.onAuthStateChange(async (event, session) => {
-                    const authCard = document.getElementById('authCard');
-                    const mainContentArea = document.getElementById('mainContentArea');
-                    const profileDropdown = document.getElementById('profileDropdown');
-                    
                     if (session) {
                         appState.user = session.user;
                         appState.mode = 'supabase';
-                        
-                        authCard.style.display = 'none';
-                        mainContentArea.style.display = 'block';
-                        
-                        // Cargar datos desde la nube
+
+                        // Cerrar modal si está abierto
+                        hideAuthModal();
+
+                        // Cargar datos desde Supabase
                         await fetchLogsFromSupabase();
-                        
-                        // Actualizar detalles del menú de perfil
+
+                        // Actualizar menú de perfil
                         document.getElementById('dropdownUserEmail').innerText = session.user.email;
                         const statusDiv = document.getElementById('dropdownSyncStatus');
                         statusDiv.className = 'sync-status synced';
                         statusDiv.querySelector('.status-text').innerText = 'Sincronizado';
                         document.getElementById('dropdownAuthActionBtn').innerText = 'Cerrar Sesión';
-                        
-                        // Comprobar y migrar datos locales huérfanos
+
+                        // Migrar datos locales si existen
                         await checkAndMigrateGuestData();
                     } else {
                         appState.user = null;
-                        
-                        const isGuestExplicit = localStorage.getItem('glucose_guest_mode') === 'true';
-                        if (isGuestExplicit) {
-                            appState.mode = 'guest';
-                            authCard.style.display = 'none';
-                            mainContentArea.style.display = 'block';
-                            loadGuestLogs();
-                        } else {
-                            appState.mode = 'auth';
-                            authCard.style.display = 'block';
-                            mainContentArea.style.display = 'none';
+                        appState.mode = 'guest';
+
+                        // Si no había sesión activa y no hay datos locales, mostrar modal
+                        const hasLocalLogs = localStorage.getItem('glucose_logs');
+                        if (!hasLocalLogs) {
+                            // Primera visita: mostrar modal de login
+                            showAuthModal();
                         }
-                        
+
+                        loadGuestLogs();
+
                         document.getElementById('dropdownUserEmail').innerText = 'invitado@glycoflow.com';
                         const statusDiv = document.getElementById('dropdownSyncStatus');
                         statusDiv.className = 'sync-status guest';
@@ -1692,11 +1957,9 @@
                     renderApp();
                 });
             } else {
-                // Ejecución directa en Modo Local si no hay credenciales
+                // Sin Supabase: modo local
                 appState.mode = 'guest';
                 document.getElementById('credentialsBanner').style.display = 'flex';
-                document.getElementById('authCard').style.display = 'none';
-                document.getElementById('mainContentArea').style.display = 'block';
                 loadGuestLogs();
                 renderApp();
             }
@@ -1787,28 +2050,39 @@
 
             const email = document.getElementById('authEmail').value.trim();
             const password = document.getElementById('authPassword').value;
+            const errorDiv = document.getElementById('authErrorMsg');
             
             const spinner = document.getElementById('authSpinner');
             const actionText = document.getElementById('authActionText');
             const submitBtn = document.getElementById('btnAuthAction');
 
+            errorDiv.style.display = 'none';
             spinner.style.display = 'block';
             actionText.style.display = 'none';
             submitBtn.disabled = true;
 
             try {
                 if (currentAuthTab === 'login') {
-                    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
                     if (error) throw error;
+                    // El modal se cierra automáticamente via onAuthStateChange
                 } else {
-                    const { data, error } = await supabaseClient.auth.signUp({ email, password });
+                    const { error } = await supabaseClient.auth.signUp({ email, password });
                     if (error) throw error;
-                    alert('¡Registro exitoso! Ya puedes iniciar sesión con tu nueva cuenta.');
+                    errorDiv.style.display = 'block';
+                    errorDiv.style.backgroundColor = 'var(--normal-light)';
+                    errorDiv.style.borderColor = 'var(--normal-border)';
+                    errorDiv.style.color = 'var(--normal)';
+                    errorDiv.innerText = '¡Cuenta creada! Revisa tu correo para confirmarla e iniciá sesión.';
                     switchAuthTab('login');
                 }
             } catch (err) {
                 console.error('Error Auth:', err);
-                alert('Fallo en el servidor: ' + (err.message || 'Verifica tus datos'));
+                errorDiv.style.display = 'block';
+                errorDiv.style.backgroundColor = '';
+                errorDiv.style.borderColor = '';
+                errorDiv.style.color = '';
+                errorDiv.innerText = err.message || 'Correo o contraseña incorrectos. Verifícalos.';
             } finally {
                 spinner.style.display = 'none';
                 actionText.style.display = 'inline';
@@ -1817,10 +2091,8 @@
         }
 
         function continueAsGuest() {
-            localStorage.setItem('glucose_guest_mode', 'true');
             appState.mode = 'guest';
-            document.getElementById('authCard').style.display = 'none';
-            document.getElementById('mainContentArea').style.display = 'block';
+            hideAuthModal();
             loadGuestLogs();
             renderApp();
         }
@@ -1828,18 +2100,27 @@
         function handleDropdownAuthAction() {
             document.getElementById('profileDropdown').style.display = 'none';
             if (appState.user && supabaseClient) {
+                // Cerrar sesión
                 supabaseClient.auth.signOut();
-                localStorage.removeItem('glucose_guest_mode');
             } else {
-                localStorage.removeItem('glucose_guest_mode');
-                if (supabaseClient) {
-                    appState.mode = 'auth';
-                    document.getElementById('authCard').style.display = 'block';
-                    document.getElementById('mainContentArea').style.display = 'none';
-                } else {
-                    alert('Supabase no está configurado en este servidor.');
-                }
+                // Abrir modal de login
+                showAuthModal();
             }
+        }
+
+        function showAuthModal() {
+            const modal = document.getElementById('authModal');
+            modal.classList.add('visible');
+            // Limpiar formulario
+            document.getElementById('authEmail').value = '';
+            document.getElementById('authPassword').value = '';
+            document.getElementById('authErrorMsg').style.display = 'none';
+            document.getElementById('authEmail').focus();
+        }
+
+        function hideAuthModal() {
+            const modal = document.getElementById('authModal');
+            modal.classList.remove('visible');
         }
 
         // Temas visuales
