@@ -1658,8 +1658,8 @@
             <!-- Contenedor de la Aplicación Principal -->
             <div id="mainContentArea" style="display: block;">
                 <div style="display: flex; flex-direction: column; gap: 20px;">
-                    
-                    <!-- Resumen del Panel de Control -->
+
+                    <!-- Estadísticas de Resumen (span completo) -->
                     <div class="summary-grid">
                         <div class="stat-card stat-avg">
                             <div class="stat-label">Promedio</div>
@@ -1683,132 +1683,147 @@
                         </div>
                     </div>
 
-                    <!-- Configuración de Recordatorios Diarios (Desplegable) -->
-                    <div class="card" id="remindersCard" style="display: none;">
-                        <div class="card-title">
-                            <span>Recordatorios Diarios</span>
-                        </div>
-                        <div class="reminder-intro">
-                            Programa alertas para medir tu glucosa. Para recibirlas, debes mantener esta pestaña del navegador abierta.
-                        </div>
-                        <div class="reminder-switch-container">
-                            <span class="switch-label">Activar Alertas</span>
-                            <label class="switch">
-                                <input type="checkbox" id="notificationsEnableSwitch">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <div class="add-reminder-form">
-                            <input type="time" id="reminderTimeInput" value="08:00">
-                            <button class="btn-add-reminder" id="btnAddReminder">Agregar</button>
-                        </div>
-                        <div class="reminders-list" id="remindersList">
-                            <!-- Carga dinámica de recordatorios -->
-                        </div>
-                    </div>
+                    <!-- Layout de 2 columnas en desktop, 1 columna en móvil/tablet -->
+                    <div class="desktop-layout">
 
-                    <!-- Formulario de Registro de Glucosa -->
-                    <div class="card">
-                        <div class="card-title">Registrar Medición</div>
-                        <form id="logForm" onsubmit="handleFormSubmit(event)">
-                            <div class="form-group">
-                                <label for="glucoseValue">Nivel de Glucosa</label>
-                                <div class="glucose-control">
-                                    <button type="button" class="glucose-btn" onclick="adjustGlucose(-5)">-5</button>
-                                    <button type="button" class="glucose-btn" onclick="adjustGlucose(-1)">-</button>
-                                    <div class="glucose-input-wrapper">
-                                        <input type="number" id="glucoseValue" name="glucoseValue" min="20" max="600" required value="100">
-                                        <span class="unit-tag">mg/dL</span>
+                        <!-- COLUMNA IZQUIERDA: Formulario + Recordatorios -->
+                        <div class="desktop-col-left">
+
+                            <!-- Configuración de Recordatorios Diarios (Desplegable) -->
+                            <div class="card" id="remindersCard" style="display: none;">
+                                <div class="card-title">
+                                    <span>Recordatorios Diarios</span>
+                                </div>
+                                <div class="reminder-intro">
+                                    Programa alertas para medir tu glucosa. Para recibirlas, debes mantener esta pestaña del navegador abierta.
+                                </div>
+                                <div class="reminder-switch-container">
+                                    <span class="switch-label">Activar Alertas</span>
+                                    <label class="switch">
+                                        <input type="checkbox" id="notificationsEnableSwitch">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="add-reminder-form">
+                                    <input type="time" id="reminderTimeInput" value="08:00">
+                                    <button class="btn-add-reminder" id="btnAddReminder">Agregar</button>
+                                </div>
+                                <div class="reminders-list" id="remindersList">
+                                    <!-- Carga dinámica de recordatorios -->
+                                </div>
+                            </div>
+
+                            <!-- Formulario de Registro de Glucosa -->
+                            <div class="card">
+                                <div class="card-title">Registrar Medición</div>
+                                <form id="logForm" onsubmit="handleFormSubmit(event)">
+                                    <div class="form-group">
+                                        <label for="glucoseValue">Nivel de Glucosa</label>
+                                        <div class="glucose-control">
+                                            <button type="button" class="glucose-btn" onclick="adjustGlucose(-5)">-5</button>
+                                            <button type="button" class="glucose-btn" onclick="adjustGlucose(-1)">-</button>
+                                            <div class="glucose-input-wrapper">
+                                                <input type="number" id="glucoseValue" name="glucoseValue" min="20" max="600" required value="100">
+                                                <span class="unit-tag">mg/dL</span>
+                                            </div>
+                                            <button type="button" class="glucose-btn" onclick="adjustGlucose(1)">+</button>
+                                            <button type="button" class="glucose-btn" onclick="adjustGlucose(5)">+5</button>
+                                        </div>
                                     </div>
-                                    <button type="button" class="glucose-btn" onclick="adjustGlucose(1)">+</button>
-                                    <button type="button" class="glucose-btn" onclick="adjustGlucose(5)">+5</button>
+
+                                    <div class="form-group">
+                                        <label for="logDate">Fecha y Hora</label>
+                                        <div class="datetime-input-group">
+                                            <input type="datetime-local" id="logDate" name="logDate" required>
+                                            <button type="button" class="now-btn" onclick="setCurrentDateTime()">Ahora</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Etiqueta / Contexto de la Toma</label>
+                                        <div class="tags-container" id="quickTags">
+                                            <span class="tag-pill" onclick="selectTag(this)">Ayunas</span>
+                                            <span class="tag-pill" onclick="selectTag(this)">Antes del Desayuno</span>
+                                            <span class="tag-pill" onclick="selectTag(this)">Después del Desayuno</span>
+                                            <span class="tag-pill" onclick="selectTag(this)">Antes del Almuerzo</span>
+                                            <span class="tag-pill" onclick="selectTag(this)">Después del Almuerzo</span>
+                                            <span class="tag-pill" onclick="selectTag(this)">Antes de la Cena</span>
+                                            <span class="tag-pill" onclick="selectTag(this)">Después de la Cena</span>
+                                            <span class="tag-pill" onclick="selectTag(this)">Antes de dormir</span>
+                                        </div>
+                                        <input type="text" id="customNote" class="custom-note-input" placeholder="Escribe una nota personalizada o selecciona arriba...">
+                                    </div>
+
+                                    <button type="submit" class="btn-primary" id="btnSaveLog">
+                                        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                                        Guardar Medición
+                                    </button>
+                                </form>
+                            </div>
+
+                        </div><!-- /desktop-col-left -->
+
+                        <!-- COLUMNA DERECHA: Gráfico + Historial -->
+                        <div class="desktop-col-right">
+
+                            <!-- Sección del Gráfico -->
+                            <div class="card" style="position: relative;">
+                                <div class="chart-header">
+                                    <div class="card-title" style="margin-bottom: 0;">Tendencias de Glucosa</div>
+                                    <div class="filter-group">
+                                        <button class="filter-btn active" onclick="changeChartFilter('7days', this)">7 Días</button>
+                                        <button class="filter-btn" onclick="changeChartFilter('30days', this)">30 Días</button>
+                                        <button class="filter-btn" onclick="changeChartFilter('all', this)">Todo</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="chart-target-indicator">
+                                    <div class="indicator-item">
+                                        <span class="indicator-dot" style="background-color: var(--normal);"></span>
+                                        <span>Normal (70 - 140)</span>
+                                    </div>
+                                    <div class="indicator-item">
+                                        <span class="indicator-dot" style="background-color: var(--warning);"></span>
+                                        <span>Elevado (141 - 180)</span>
+                                    </div>
+                                    <div class="indicator-item">
+                                        <span class="indicator-dot" style="background-color: var(--danger);"></span>
+                                        <span>Peligroso</span>
+                                    </div>
+                                </div>
+
+                                <div class="chart-container">
+                                    <svg id="glucoseChart">
+                                        <!-- Gráfico SVG dinámico -->
+                                    </svg>
+                                    <div id="chartTooltip" class="chart-tooltip"></div>
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="logDate">Fecha y Hora</label>
-                                <div class="datetime-input-group">
-                                    <input type="datetime-local" id="logDate" name="logDate" required>
-                                    <button type="button" class="now-btn" onclick="setCurrentDateTime()">Ahora</button>
+                            <!-- Sección de Historial -->
+                            <div class="card">
+                                <div class="history-controls">
+                                    <div class="card-title" style="margin-bottom: 0;">Historial de Medidas</div>
+                                    <button class="btn-export" onclick="exportToCSV()" title="Exportar todas las mediciones a archivo CSV">
+                                        <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                                        Exportar CSV
+                                    </button>
+                                </div>
+
+                                <div class="search-wrapper" style="margin-bottom: 16px;">
+                                    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                                    <input type="text" id="searchInput" class="search-input" placeholder="Buscar por nota o valor..." oninput="renderHistoryList()">
+                                </div>
+
+                                <div class="history-list" id="historyList">
+                                    <!-- Registros dinámicos -->
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label>Etiqueta / Contexto de la Toma</label>
-                                <div class="tags-container" id="quickTags">
-                                    <span class="tag-pill" onclick="selectTag(this)">Ayunas</span>
-                                    <span class="tag-pill" onclick="selectTag(this)">Antes del Desayuno</span>
-                                    <span class="tag-pill" onclick="selectTag(this)">Después del Desayuno</span>
-                                    <span class="tag-pill" onclick="selectTag(this)">Antes del Almuerzo</span>
-                                    <span class="tag-pill" onclick="selectTag(this)">Después del Almuerzo</span>
-                                    <span class="tag-pill" onclick="selectTag(this)">Antes de la Cena</span>
-                                    <span class="tag-pill" onclick="selectTag(this)">Después de la Cena</span>
-                                    <span class="tag-pill" onclick="selectTag(this)">Antes de dormir</span>
-                                </div>
-                                <input type="text" id="customNote" class="custom-note-input" placeholder="Escribe una nota personalizada o selecciona arriba...">
-                            </div>
+                        </div><!-- /desktop-col-right -->
 
-                            <button type="submit" class="btn-primary" id="btnSaveLog">
-                                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                                Guardar Medición
-                            </button>
-                        </form>
-                    </div>
+                    </div><!-- /desktop-layout -->
 
-                    <!-- Sección del Gráfico -->
-                    <div class="card" style="position: relative;">
-                        <div class="chart-header">
-                            <div class="card-title" style="margin-bottom: 0;">Tendencias de Glucosa</div>
-                            <div class="filter-group">
-                                <button class="filter-btn active" onclick="changeChartFilter('7days', this)">7 Días</button>
-                                <button class="filter-btn" onclick="changeChartFilter('30days', this)">30 Días</button>
-                                <button class="filter-btn" onclick="changeChartFilter('all', this)">Todo</button>
-                            </div>
-                        </div>
-                        
-                        <div class="chart-target-indicator">
-                            <div class="indicator-item">
-                                <span class="indicator-dot" style="background-color: var(--normal);"></span>
-                                <span>Normal (70 - 140)</span>
-                            </div>
-                            <div class="indicator-item">
-                                <span class="indicator-dot" style="background-color: var(--warning);"></span>
-                                <span>Elevado (141 - 180)</span>
-                            </div>
-                            <div class="indicator-item">
-                                <span class="indicator-dot" style="background-color: var(--danger);"></span>
-                                <span>Peligroso</span>
-                            </div>
-                        </div>
-
-                        <div class="chart-container">
-                            <svg id="glucoseChart">
-                                <!-- Gráfico SVG dinámico -->
-                            </svg>
-                            <div id="chartTooltip" class="chart-tooltip"></div>
-                        </div>
-                    </div>
-
-                    <!-- Sección de Historial -->
-                    <div class="card">
-                        <div class="history-controls">
-                            <div class="card-title" style="margin-bottom: 0;">Historial de Medidas</div>
-                            <button class="btn-export" onclick="exportToCSV()" title="Exportar todas las mediciones a archivo CSV">
-                                <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
-                                Exportar CSV
-                            </button>
-                        </div>
-
-                        <div class="search-wrapper" style="margin-bottom: 16px;">
-                            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                            <input type="text" id="searchInput" class="search-input" placeholder="Buscar por nota o valor..." oninput="renderHistoryList()">
-                        </div>
-
-                        <div class="history-list" id="historyList">
-                            <!-- Registros dinámicos -->
-                        </div>
-                    </div>
-                    
                 </div>
             </div>
         </div>
